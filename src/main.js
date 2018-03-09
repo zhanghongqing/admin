@@ -27,7 +27,6 @@ router.beforeEach((to, from, next) => {
       } else if (data.status === 1) {
         next('/login')
       } else if (data.status === 2) {
-        console.log(data)
         sessionStorage.setItem('qiangfengo', data.data[0].privilege)
         next(to.fullpath)
       }

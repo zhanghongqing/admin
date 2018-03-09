@@ -6,7 +6,7 @@ export default {
     let params = Object.assign({}, {
       url: '',
       method: 'get',
-      baseURL: 'https://test.qiangfen.com:9101',
+      baseURL: 'https://www.qiangfen.com:9101',
       responseType: 'json',
       headers: {
         'Authorization': http.accessToken,
@@ -268,7 +268,6 @@ export default {
       })
   },
   postQfModel (path, param, callback, error) {
-    console.log(param)
     axios({
       url: 'http://www.qiangfen.com/koa/' + path,
       method: 'post',

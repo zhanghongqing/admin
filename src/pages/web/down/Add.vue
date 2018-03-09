@@ -35,8 +35,6 @@ import { Message } from 'element-ui'
 // import FileSaver from 'file-saver'
 import Quill from 'quill'
 
-console.log(Quill)
-
 export default {
   name: 'index',
   data () {

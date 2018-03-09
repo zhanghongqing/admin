@@ -84,8 +84,8 @@ export default {
         _this.countData = data
       })
     },
-    tabChange () {
-      console.log(1314)
+    tabChange (a, b) {
+      console.log(a, b, 1314)
     },
     changeDate (name, data) {
       this[name] = {

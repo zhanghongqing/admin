@@ -72,6 +72,12 @@ export default {
     sub: [{
       name: '用户概况',
       router: '/users'
+    }, {
+      name: '用户信息',
+      router: '/users/info'
+    }, {
+      name: '用户查询',
+      router: '/users/search'
     }]
   }]
   //     [{

@@ -119,6 +119,11 @@ export default new Router({
       path: '/users/',
       name: 'userinfo',
       component: require('@/pages/users/Show').default
+    },
+    {
+      path: '/users/info',
+      name: 'userinfos',
+      component: require('@/pages/users/Info').default
     }
   ]
 })
