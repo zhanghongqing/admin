@@ -17,7 +17,7 @@
           </el-tab-pane>
         </el-tabs>
       </div>
-      <div class="imglist"> 
+      <div class="imglist">
         <div class="imgitem" v-for="(img, index) in imgData" :key="index" @click="confirmImg(img)">
           <img :src="'http://www.qiangfen.com' + img.path">
         </div>
@@ -595,7 +595,6 @@ export default {
         text-align: center;
       }
     }
-
     .el-carousel__item h3 {
       color: #475669;
       font-size: 14px;
@@ -603,11 +602,9 @@ export default {
       line-height: 200px;
       margin: 0;
     }
-    
     .el-carousel__item:nth-child(2n) {
       background-color: #99a9bf;
     }
-    
     .el-carousel__item:nth-child(2n+1) {
       background-color: #d3dce6;
     }

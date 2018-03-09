@@ -30,7 +30,6 @@
         </svg>
       </div>
       <el-menu
-        default-active="2"
         class="el-menu-vertical-demo"
         :default-active="$route.path"
         background-color="#545c64"
@@ -236,7 +235,7 @@ export default {
         }
         &:hover{
           .ctrl{
-            margin-left: 0; 
+            margin-left: 0;
           }
         }
         .ctrl{

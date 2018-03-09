@@ -167,10 +167,10 @@ export default {
       },
       rules: {
         from: [
-            { required: true, message: '请选择', trigger: 'change' }
+          { required: true, message: '请选择', trigger: 'change' }
         ],
         is_free: [
-            { required: true, message: '请选择', trigger: 'change' }
+          { required: true, message: '请选择', trigger: 'change' }
         ],
         name: [
           { validator: checkName, trigger: 'blur' }

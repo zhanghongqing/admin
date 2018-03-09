@@ -195,7 +195,7 @@ export default {
     .cell{
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap; 
+      white-space: nowrap;
     }
     .pageBox{
       padding: 20px 0;

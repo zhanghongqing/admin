@@ -315,7 +315,7 @@ export default {
     }
     .cell{
       overflow: hidden;
-      text-overflow: ellipsis; 
+      text-overflow: ellipsis;
       max-height: 98px;
     }
     .pageBox{

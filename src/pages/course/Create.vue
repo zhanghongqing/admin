@@ -45,7 +45,6 @@
           @select="handleSelect"
           @keyup.enter.native="handleInputConfirm"
         ></el-autocomplete>
-        </el-input>
         <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 添加新标签</el-button>
       </el-form-item>
       <el-form-item label="教师">
@@ -78,7 +77,6 @@
             <div class="name">{{ props.item.name }}</div>
           </template>
         </el-autocomplete>
-        </el-input>
         <el-button v-else class="button-new-tag" size="small" @click="showInput1">+ 选择新教师</el-button>
       </el-form-item>
       <el-form-item label="有效期" prop="date">

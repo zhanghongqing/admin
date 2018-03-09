@@ -113,20 +113,17 @@ export default {
   .el-header, .el-footer {
     background-color: #f4f4f4;
   }
-  
   .el-aside {
     background-color: #fcfcfc;
     overflow: visible;
     position: relative;
   }
-  
   .el-main {
     color: #333;
     padding: 0;
     position: relative;
     box-shadow: 6px 0 6px -6px rgba(0,0,0,0.2) inset;
   }
-  
   .qfheader{
     background: #f4f4f4;
     padding: 0;

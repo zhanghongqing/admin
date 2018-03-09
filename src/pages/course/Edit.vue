@@ -244,7 +244,7 @@ export default {
       font-size: 24px;
       font-weight: bold;
       color: #fff;
-      text-shadow: 0 2px 5px rgba(0,0,0,0.9); 
+      text-shadow: 0 2px 5px rgba(0,0,0,0.9);
     }
     .handlesList{
       width: 100%;

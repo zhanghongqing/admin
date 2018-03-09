@@ -185,7 +185,7 @@
           </div>
         </div>
       </div>
-    </div>      
+    </div>
   </div>
 </template>
 
@@ -545,7 +545,7 @@ export default {
                     background: rgba(0,0,0,0.05);
                     .line{
                       margin: 0;
-                    } 
+                    }
                   }
                   &.active{
                     background: rgba(0,0,0,0.1);
@@ -604,7 +604,7 @@ export default {
                   background: rgba(0,0,0,0.05);
                   .line{
                     margin: 0;
-                  } 
+                  }
                 }
                 &.active{
                   background: rgba(0,0,0,0.1);
@@ -789,7 +789,7 @@ export default {
     }
     .cell{
       overflow: hidden;
-      text-overflow: ellipsis; 
+      text-overflow: ellipsis;
       max-height: 98px;
     }
     .pageBox{

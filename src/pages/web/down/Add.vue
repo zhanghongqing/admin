@@ -107,7 +107,7 @@ export default {
           toolbar: toolbarOptions
         },
         placeholder: 'Compose an epic...',
-        theme: 'snow'  // or 'bubble'
+        theme: 'snow'
       })
       console.log(quill)
       this.editor = quill

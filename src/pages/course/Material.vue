@@ -60,7 +60,6 @@
             <div class="name">{{ props.item.name }}</div>
           </template>
         </el-autocomplete>
-        </el-input>
         <el-button v-else class="button-new-tag" :loading="teacherLoading" size="small" @click="showInput1">+ 选择作者</el-button>
       </el-form-item>
       <el-form-item label="下载地址1" prop="downUrl1">

@@ -111,7 +111,7 @@
               </svg>
             </div>
             <div class="smalls">
-              <div v-for="(small, sIndex) in menu.smallTitle">{{small}}</div>
+              <div v-for="(small, sIndex) in menu.smallTitle" :key="sIndex">{{small}}</div>
             </div>
             <div class="panel">
               <div class="panelItem">

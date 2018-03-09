@@ -1,7 +1,7 @@
 <template>
   <div id="navShow">
     <div class="navs">
-      <div :class="{hnavItem: true, allnone: allnonebool}" v-for="(nav, nIndex) in data" :key="nIndex"> 
+      <div :class="{hnavItem: true, allnone: allnonebool}" v-for="(nav, nIndex) in data" :key="nIndex">
         <div class="name">{{nav.content[0]}}</div>
         <div class="en">{{nav.content[1]}}</div>
         <div class="bg"></div>
@@ -715,10 +715,10 @@ export default {
     padding: 20px;
   }
   .addChildForm{
-    padding: 20px; 
+    padding: 20px;
   }
   .updateChildForm{
-    padding: 20px; 
+    padding: 20px;
   }
   .seqContent{
     width: 100%;
@@ -867,7 +867,7 @@ export default {
         pointer-events: auto;
         &.up{
           margin-top: 0;
-        } 
+        }
       }
       .subList{
         position: absolute;
