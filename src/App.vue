@@ -101,6 +101,9 @@ export default {
   margin: 0;
   padding: 0;
 }
+.el-main{
+  overflow-x: hidden;
+}
 #app {
   font-family: '微软雅黑','Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

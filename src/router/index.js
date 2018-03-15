@@ -124,6 +124,36 @@ export default new Router({
       path: '/users/info',
       name: 'userinfos',
       component: require('@/pages/users/Info').default
+    },
+    {
+      path: '/users/search',
+      name: 'usersearch',
+      component: require('@/pages/users/Search').default
+    },
+    {
+      path: '/users/student',
+      name: 'userinfoa',
+      component: require('@/pages/users/Student').default
+    },
+    {
+      path: '/order/',
+      name: 'order',
+      component: require('@/pages/order/Show').default
+    },
+    {
+      path: '/order/course',
+      name: 'orderInfo',
+      component: require('@/pages/order/Info').default
+    },
+    {
+      path: '/order/list',
+      name: 'orderList',
+      component: require('@/pages/order/List').default
+    },
+    {
+      path: '/order/filter',
+      name: 'orderFilter',
+      component: require('@/pages/order/Filter').default
     }
   ]
 })

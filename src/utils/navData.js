@@ -79,6 +79,23 @@ export default {
       name: '用户查询',
       router: '/users/search'
     }]
+  }, {
+    title: '订单管理',
+    router: '/order',
+    icon: '#icon-dingdan',
+    sub: [{
+      name: '订单概况',
+      router: '/order'
+    }, {
+      name: '产品订单统计',
+      router: '/order/course'
+    }, {
+      name: '订单列表',
+      router: '/order/list'
+    }, {
+      name: '订单筛选',
+      router: '/order/filter'
+    }]
   }]
   //     [{
   //   title: '网页管理',
