@@ -1,34 +1,30 @@
 <template>
-  <div id="users">
-    <div class="countNum">
-      <div class="item" v-if="data">
+  <div id="users" v-loading="loading">
+    <div class="countNum" v-if="data">
+      <div class="item">
         总注册用户:<span>{{studentTotal}}</span>
-        今日注册用户:<span>{{data.days[0].count}}</span>
-        昨日注册用户:<span>{{data.days[1].count}}</span>
+        今日注册用户:<span>{{data.days[data.days.length - 1].count}}</span>
+        昨日注册用户:<span>{{data.days[data.days.length - 2].count}}</span>
       </div>
     </div>
     <el-tabs type="border-card"
       @tab-click="tabChange"
-    >
+      v-if="data">
       <el-tab-pane showData="total">
-        <span slot="label"><i class="el-icon-date"></i> 总增长</span>
-        <e-charts :options="curOptions"></e-charts>
-      </el-tab-pane>
-      <el-tab-pane showData="day">
-        <span slot="label"><i class="el-icon-date"></i> 每日增长</span>
-        <e-charts :options="curOptions"></e-charts>
+        <span slot="label"><i class="el-icon-date"></i> 总增长趋势</span>
+        <e-charts class="chart" :options="curOptions"></e-charts>
       </el-tab-pane>
       <el-tab-pane showData="days">
-        <span slot="label"><i class="el-icon-date"></i> 7日内增长</span>
-        <e-charts :options="curOptions"></e-charts>
-      </el-tab-pane>
-      <el-tab-pane showData="weeks">
-        <span slot="label"><i class="el-icon-date"></i> 7周内增长</span>
-        <e-charts :options="curOptions"></e-charts>
+        <span slot="label"><i class="el-icon-date"></i> 每日增长</span>
+        <e-charts class="chart" :options="curOptions"></e-charts>
       </el-tab-pane>
       <el-tab-pane showData="months">
-        <span slot="label"><i class="el-icon-date"></i> 7月内增长</span>
-        <e-charts :options="curOptions"></e-charts>
+        <span slot="label"><i class="el-icon-date"></i> 每月增长</span>
+        <e-charts class="chart" :options="curOptions"></e-charts>
+      </el-tab-pane>
+      <el-tab-pane showData="weeks">
+        <span slot="label"><i class="el-icon-date"></i> 每周增长</span>
+        <e-charts class="chart" :options="curOptions"></e-charts>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -45,11 +41,9 @@ export default {
   data () {
     return {
       data: null,
-      countData: null,
-      studentTotal: 0,
+      loading: true,
       handleData: {
         total: [],
-        day: [],
         days: [],
         weeks: [],
         months: []
@@ -61,41 +55,25 @@ export default {
     ECharts
   },
   watch: {
-    countData () {
-      let data = []
-      let totalData = []
-      let _this = this
-      let newData = [...this.countData]
-      newData.sort(function (a, b) {
-        return new Date(a.date).getTime() - new Date(b.date).getTime()
-      })
-      console.log(newData)
-      let curNum = 0
-      newData.forEach(function (e, i) {
-        data.push(_this.randomData(e))
-        let item = _this.addData(curNum, e)
-        curNum = item.value[1]
-        totalData.push(item)
-      })
-      this.sortData.total = totalData
-      this.sortData.day = data
-      this.changeDate('total')
-    },
     data () {
       this.studentTotal = this.data.months.reduce((t, o) => {
         return t + o.count
       }, 0)
       let mce = 0
-      this.handleData.total = this.data.days.reverse().map((e, i, o) => {
+      this.handleData.total = this.data.days.map((e, i, o) => {
         mce += e.count
-        return {
-          name: e.date,
-          value: [
-            e.date,
-            mce
-          ]
-        }
+        return this.formatData(e, mce)
       })
+      this.handleData.days = this.data.days.map((e, i, o) => {
+        return this.formatData(e, e.count)
+      })
+      this.handleData.months = this.data.months.map((e, i, o) => {
+        return this.formatData(e, e.count)
+      })
+      this.handleData.weeks = this.data.weeks.map((e, i, o) => {
+        return this.formatData(e, e.count)
+      })
+      this.loading = false
       this.changeDate('total')
     }
   },
@@ -116,9 +94,6 @@ export default {
         case 'total':
           curData = this.handleData.total
           break
-        case 'day':
-          curData = this.handleData.day
-          break
         case 'days':
           curData = this.handleData.days
           break
@@ -134,8 +109,7 @@ export default {
           trigger: 'axis',
           formatter: function (params) {
             params = params[0]
-            let date = new Date(params.name)
-            return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' : ' + params.value[1]
+            return params.name + ' : ' + params.value[1]
           },
           axisPointer: {
             animation: false
@@ -163,24 +137,12 @@ export default {
         }]
       }
     },
-    randomData (ele) {
-      let date = new Date(ele.date)
+    formatData (e, mce) {
       return {
-        name: date.toString(),
+        name: e.date,
         value: [
-          ele.date,
-          ele.count
-        ]
-      }
-    },
-    addData (num, ele) {
-      let date = new Date(ele.date)
-      num += ele.count
-      return {
-        name: date.toString(),
-        value: [
-          ele.date,
-          num
+          e.date,
+          mce
         ]
       }
     }
@@ -197,6 +159,11 @@ export default {
     height: 300px;
   }
   #users{
+    min-height: 200px;
+    .chart{
+      width: 1000px;
+      margin: 0 auto;
+    }
     .countNum{
       padding: 20px 0;
       width: 100%;
