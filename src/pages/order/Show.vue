@@ -1,5 +1,5 @@
 <template>
-  <div id="users">
+  <div id="orders">
     <div class="countNum">
       <el-table
         :data="countOrder"
@@ -29,25 +29,6 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-tabs type="border-card"
-      @tab-click="tabChange"
-    >
-      <el-tab-pane showData="total">
-        <span slot="label"><i class="el-icon-date"></i> 总增长</span>
-      </el-tab-pane>
-      <el-tab-pane showData="day">
-        <span slot="label"><i class="el-icon-date"></i> 每日增长</span>
-      </el-tab-pane>
-      <el-tab-pane showData="days">
-        <span slot="label"><i class="el-icon-date"></i> 7日内增长</span>
-      </el-tab-pane>
-      <el-tab-pane showData="weeks">
-        <span slot="label"><i class="el-icon-date"></i> 7周内增长</span>
-      </el-tab-pane>
-      <el-tab-pane showData="months">
-        <span slot="label"><i class="el-icon-date"></i> 7月内增长</span>
-      </el-tab-pane>
-    </el-tabs>
   </div>
 </template>
 
@@ -58,7 +39,7 @@ import 'echarts/lib/component/tooltip'
 import 'echarts/lib/chart/line'
 
 export default {
-  name: 'users',
+  name: 'orders',
   data () {
     return {
       datas: null,
@@ -98,4 +79,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
+  #orders{
+    padding: 0;
+  }
 </style>

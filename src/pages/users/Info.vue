@@ -3,6 +3,7 @@
     <div class="userinfoContainer">
       <el-table
         :data="datas"
+        v-loading="loading"
         border
         style="width: 100%">
         <el-table-column
@@ -55,6 +56,7 @@ export default {
     return {
       datas: [],
       currentPage: 1,
+      loading: true,
       total: 0,
       pageSize: 10
     }
@@ -77,6 +79,7 @@ export default {
         console.log(data)
         _this.datas = data.data
         _this.total = data.count
+        _this.loading = false
       })
     },
     showInfo (row) {
@@ -88,6 +91,7 @@ export default {
       })
     },
     handleSizeChange (val) {
+      this.loading = true
       console.log(`每页 ${val} 条`)
       this.currentPage = 1
       this.$router.push({
@@ -100,6 +104,7 @@ export default {
       this.init()
     },
     handleCurrentChange (val) {
+      this.loading = true
       console.log(`当前页: ${val}`)
       this.$router.push({
         path: '/users/info',
