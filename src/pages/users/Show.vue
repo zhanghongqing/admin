@@ -1,18 +1,10 @@
 <template>
   <div id="users">
     <div class="countNum">
-      <div class="item">总注册用户:<span v-if="datas">{{datas.count}}</span></div>
-      <div class="item">
-        今日注册用户:<span v-if="datas">{{datas.days[0].count}}</span>
-        昨日注册用户:<span v-if="datas">{{datas.days[1].count}}</span>
-      </div>
-      <div class="item">
-        本周注册用户:<span v-if="datas">{{datas.weeks[0].count}}</span>
-        上周注册用户:<span v-if="datas">{{datas.weeks[1].count}}</span>
-      </div>
-      <div class="item">
-        本月注册用户:<span v-if="datas">{{datas.months[0].count}}</span>
-        上月注册用户:<span v-if="datas">{{datas.months[1].count}}</span>
+      <div class="item" v-if="data">
+        总注册用户:<span>{{studentTotal}}</span>
+        今日注册用户:<span>{{data.days[0].count}}</span>
+        昨日注册用户:<span>{{data.days[1].count}}</span>
       </div>
     </div>
     <el-tabs type="border-card"
@@ -52,13 +44,12 @@ export default {
   name: 'users',
   data () {
     return {
-      datas: null,
+      data: null,
       countData: null,
-      sortData: {
-        total: null,
-        day: null
-      },
+      studentTotal: 0,
       handleData: {
+        total: [],
+        day: [],
         days: [],
         weeks: [],
         months: []
@@ -90,17 +81,22 @@ export default {
       this.sortData.day = data
       this.changeDate('total')
     },
-    datas () {
-      let _this = this
-      this.datas.days.forEach(function (e, i) {
-        _this.handleData.days.push(_this.randomData(e))
+    data () {
+      this.studentTotal = this.data.months.reduce((t, o) => {
+        return t + o.count
+      }, 0)
+      let mce = 0
+      this.handleData.total = this.data.days.reverse().map((e, i, o) => {
+        mce += e.count
+        return {
+          name: e.date,
+          value: [
+            e.date,
+            mce
+          ]
+        }
       })
-      this.datas.weeks.forEach(function (e, i) {
-        _this.handleData.weeks.push(_this.randomData(e))
-      })
-      this.datas.months.forEach(function (e, i) {
-        _this.handleData.months.push(_this.randomData(e))
-      })
+      this.changeDate('total')
     }
   },
   methods: {
@@ -108,11 +104,7 @@ export default {
       let _this = this
       Http.getQfModel('mysql/students', '', function (data) {
         console.log(data)
-        _this.datas = data
-      })
-      Http.getQfModel('mysql/userCount', '', function (data) {
-        console.log(data)
-        _this.countData = data
+        _this.data = data
       })
     },
     tabChange (tab, b) {
@@ -122,10 +114,10 @@ export default {
       let curData = null
       switch (tab) {
         case 'total':
-          curData = this.sortData.total
+          curData = this.handleData.total
           break
         case 'day':
-          curData = this.sortData.day
+          curData = this.handleData.day
           break
         case 'days':
           curData = this.handleData.days
