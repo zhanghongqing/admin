@@ -38,6 +38,9 @@
           </el-tabs>
         </div>
       </el-tab-pane>
+      <el-tab-pane showData="day">
+        <span slot="label"><i class="el-icon-date"></i> 按时间筛选</span>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>

@@ -162,7 +162,7 @@ export default {
       return row.status === 'CREATED' ? '销售中' : '已下线'
     },
     formatStatus1 (row) {
-      return row.status === 'TOPAY' ? '未完成' : '已完成'
+      return row.status === 'TO_PAY' ? '未完成' : '已完成'
     },
     handleClick (tab, event) {
       console.log(1)
