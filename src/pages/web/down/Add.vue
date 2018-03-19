@@ -171,7 +171,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
-  @import url('https://cdn.quilljs.com/1.0.0/quill.snow.css');
+  @import url('https://cdn.bootcss.com/quill/1.3.6/quill.snow.min.css');
 
   #newsAdd{
     padding: 20px;

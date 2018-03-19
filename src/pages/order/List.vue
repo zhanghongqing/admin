@@ -77,7 +77,8 @@ export default {
       let _this = this
       let param = {
         product_id: this.$route.query.product_id || '',
-        page: this.$route.query.page || 1
+        page: this.$route.query.page || 1,
+        date: this.$route.query.date || ''
       }
       Http.postQfModel('mysql/getOrderList', param, function (data) {
         console.log(data)

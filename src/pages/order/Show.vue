@@ -2,7 +2,7 @@
   <div id="orders">
     <div class="countNum">
       <el-table
-        :data="countOrder"
+        :data="orderCount"
         v-loading="loading"
         border
         style="width: 100%">
@@ -50,17 +50,12 @@ export default {
   components: {
     ECharts
   },
-  computed: {
-    countOrder () {
-      return JSON.parse(this.orderCount)
-    }
-  },
   methods: {
     init () {
       let _this = this
       Http.getQfModel('mysql/getOrder', '', function (data) {
         console.log(data)
-        _this.orderCount = data.countOrder
+        _this.orderCount = JSON.parse(data.data)
         _this.loading = false
       })
     },

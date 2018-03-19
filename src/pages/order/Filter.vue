@@ -15,7 +15,7 @@
             <span style="float: right; color: #8492a6; font-size: 13px">{{ item.id }}</span>
           </el-option>
         </el-select>
-        <el-button type="danger" @click="filter('all')">确定</el-button>
+        <el-button type="danger" @click="filter">确定</el-button>
         <div class="result" v-if="data">
           <div class="count">总订单:<span>{{data.total}}</span>已完成:<span>{{data.done}}</span>总金额:<span>{{data.money}}</span></div>
           <el-tabs type="border-card"
@@ -24,22 +24,19 @@
             <el-tab-pane showData="total">
               <span slot="label"><i class="el-icon-date"></i> 热力图</span>
               <div class="btns">
-                <el-button size="mini" @click="filter('all')">全部订单数量</el-button>
-                <el-button size="mini" @click="filter('done')">已完成订单数量</el-button>
-                <el-button size="mini" @click="filter('money')">已完成订单金额</el-button>
+                <el-button size="mini" @click="setOption('adata')">全部订单数量</el-button>
+                <el-button size="mini" @click="setOption('ddata')">已完成订单数量</el-button>
+                <el-button size="mini" @click="setOption('mdata')">已完成订单金额</el-button>
                 <div class="showTitle">{{ct}}</div>
               </div>
-              <e-charts v-loading="eloading" class="calendar" @click="showOrders" :style="{height: ch}" :options="option"></e-charts>
+              <e-charts v-loading="eloading" ref="mapChart" class="calendar" @click="showOrders" :style="{height: ch}" :options="option"></e-charts>
             </el-tab-pane>
             <el-tab-pane showData="day">
               <span slot="label"><i class="el-icon-date"></i> 柱形折线图</span>
-              <e-charts v-loading="eloading" @click="showOrders" :style="{height: '400px', width: '1000px'}" :options="barOption"></e-charts>
+              <e-charts v-loading="eloading" :style="{height: '400px', width: '1000px'}" :options="barOption"></e-charts>
             </el-tab-pane>
           </el-tabs>
         </div>
-      </el-tab-pane>
-      <el-tab-pane showData="day">
-        <span slot="label"><i class="el-icon-date"></i> 按时间筛选</span>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -66,75 +63,15 @@ export default {
       option: null,
       ch: '200px',
       showTitle: {
-        all: '全部订单数量',
-        done: '已完成订单数量',
-        money: '已完成订单金额'
+        adata: '全部订单数量',
+        ddata: '已完成订单数量',
+        mdata: '已完成订单金额'
       },
       ct: '全部订单数量',
-      barOption: {
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'cross',
-            crossStyle: {
-              color: '#999'
-            }
-          }
-        },
-        toolbox: {
-          feature: {
-            dataView: {show: true, readOnly: false},
-            magicType: {show: true, type: ['line', 'bar']},
-            restore: {show: true},
-            saveAsImage: {show: true}
-          }
-        },
-        legend: {
-          data:['蒸发量', '降水量', '平均温度']
-        },
-        xAxis: [
-          {
-            type: 'category',
-            data: ['1','2','3','4','5','6','7','8','9','10','11','12'],
-            axisPointer: {
-              type: 'shadow'
-            }
-          }
-        ],
-        yAxis: [{
-          type: 'value',
-          name: '水量',
-          min: 0,
-          max: 250,
-          interval: 50,
-          axisLabel: {
-            formatter: '{value} ml'
-          }
-        }, {
-          type: 'value',
-          name: '温度',
-          min: 0,
-          max: 25,
-          interval: 5,
-          axisLabel: {
-            formatter: '{value} °C'
-          }
-        }],
-        series: [{
-          name:'蒸发量',
-          type:'bar',
-          data:[2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
-        }, {
-          name:'降水量',
-          type:'bar',
-          data:[2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
-        }, {
-          name:'平均温度',
-          type:'line',
-          yAxisIndex: 1,
-          data:[2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2]
-        }]
-      }
+      barOption: null,
+      loption: [],
+      ldata: null,
+      mdata: null
     }
   },
   components: {
@@ -143,6 +80,41 @@ export default {
   watch: {
     $route () {
       this.init()
+    },
+    data () {
+      let mdata = {
+        adata: [],
+        ddata: [],
+        mdata: []
+      }
+      let ldata = {
+        date: [],
+        all: [],
+        done: [],
+        money: []
+      }
+      let max1 = 0
+      let max2 = 0
+      this.data.data.forEach(function (e, i) {
+        if (e.count > max1) {
+          max1 = e.count
+        }
+        if (e.money > max2) {
+          max2 = e.money
+        }
+        mdata.adata.push([e.date, e.count])
+        mdata.ddata.push([e.date, e.done])
+        mdata.mdata.push([e.date, e.money])
+        ldata.date.push(e.date)
+        ldata.all.push(e.count)
+        ldata.done.push(e.done)
+        ldata.money.push(e.money)
+      })
+      this.mdata = mdata
+      ldata.max1 = max1
+      ldata.max2 = max2
+      this.ldata = ldata
+      this.setOption('adata')
     }
   },
   computed: {
@@ -154,7 +126,6 @@ export default {
     init () {
       let _this = this
       Http.getQfModel('mysql/getProduct', '', function (data) {
-        console.log(data)
         _this.options = data.data
       })
     },
@@ -165,23 +136,29 @@ export default {
       console.log(131)
     },
     showOrders (data) {
-      console.log(data)
+      this.$router.push({
+        path: `/order/list`,
+        query: {
+          product_id: this.product,
+          date: data.value[0]
+        }
+      })
     },
-    filter (type) {
+    filter () {
       this.eloading = true
-      this.ct = this.showTitle[type]
       let _this = this
       let param = {
-        id: this.product,
-        dataType: type
+        id: this.product
       }
       Http.postQfModel('mysql/getProductInfo', param, function (data) {
         _this.data = data
-        _this.setOption(data.data)
       })
     },
-    setOption (data) {
-      data = this.formatData(data)
+    setOption (type) {
+      this.eloading = true
+      this.ct = this.showTitle[type]
+      let _this = this
+      let data = this.formatData(this.mdata[type])
       let my = data.dates[0][0].substring(0, 4)
       let newDates = []
       data.dates.forEach(function (e, i) {
@@ -223,16 +200,83 @@ export default {
         calendar: c,
         series: s
       }
+      this.barOption = {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross',
+            crossStyle: {
+              color: '#999'
+            }
+          }
+        },
+        toolbox: {
+          feature: {
+            dataView: {show: true, readOnly: false},
+            magicType: {show: true, type: ['line', 'bar']},
+            restore: {show: true},
+            saveAsImage: {show: true}
+          }
+        },
+        legend: {
+          data: ['已完成', '全部', '金额']
+        },
+        xAxis: [
+          {
+            type: 'category',
+            data: this.ldata.date,
+            axisPointer: {
+              type: 'shadow'
+            }
+          }
+        ],
+        yAxis: [{
+          type: 'value',
+          name: '数量',
+          min: 0,
+          max: Math.floor(this.ldata.max1 * 1.15),
+          interval: Math.floor(this.ldata.max1 / 5),
+          axisLabel: {
+            formatter: '{value} 个'
+          }
+        }, {
+          type: 'value',
+          name: '金额',
+          min: 0,
+          max: Math.floor(this.ldata.max2 * 1.25),
+          interval: Math.floor(this.ldata.max2 / 5),
+          axisLabel: {
+            formatter: '{value} 元'
+          }
+        }],
+        series: [{
+          name: '已完成',
+          type: 'bar',
+          data: this.ldata.done
+        }, {
+          name: '全部',
+          type: 'bar',
+          data: this.ldata.all
+        }, {
+          name: '金额',
+          type: 'line',
+          yAxisIndex: 1,
+          data: this.ldata.money
+        }]
+      }
       this.eloading = false
+      setTimeout(function () {
+        _this.$refs.mapChart.resize()
+      }, 10)
     },
     formatData (data) {
       let max = 0
       let dates = []
       data.forEach(function (e, i) {
-        if (e.count > max) {
-          max = e.count
+        if (e[1] > max) {
+          max = e[1]
         }
-        dates.push([e.date, e.count])
+        dates.push(e)
       })
       return {
         max: max,
