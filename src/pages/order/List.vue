@@ -33,8 +33,10 @@
         </el-table-column>
         <el-table-column
           label="状态"
-          width="100"
-          :formatter="formatStatus">
+          width="100">
+          <template slot-scope="scope">
+            <p @click="changeStatus(scope.row.status)" class="productStatus">{{scope.row.status === 'TO_PAY' ? '未完成' : '已完成'}}</p>
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -78,7 +80,8 @@ export default {
       let param = {
         product_id: this.$route.query.product_id || '',
         page: this.$route.query.page || 1,
-        date: this.$route.query.date || ''
+        date: this.$route.query.date || '',
+        status: this.$route.query.status || ''
       }
       Http.postQfModel('mysql/getOrderList', param, function (data) {
         console.log(data)
@@ -108,12 +111,23 @@ export default {
     studentId (row) {
       return `/users/student?id=${row.sid}`
     },
-    formatStatus (row) {
-      if (row.status === 'TO_PAY') {
-        return '未完成'
+    changeStatus (status) {
+      let t = ''
+      if (status === 'TO_PAY') {
+        t = 'undone'
       } else {
-        return '已完成'
+        t = 'done'
       }
+      if (this.$route.query.status === t) {
+        return
+      }
+      this.loading = true
+      this.$router.push({
+        path: '/order/list',
+        query: Object.assign({}, this.$route.query, {
+          status: t
+        })
+      })
     }
   },
   mounted () {
@@ -128,6 +142,13 @@ export default {
     .productUrl{
       color: #666;
       text-decoration: none;
+      &:hover{
+        color: #e75151;
+      }
+    }
+    .productStatus{
+      color: #666;
+      cursor: pointer;
       &:hover{
         color: #e75151;
       }

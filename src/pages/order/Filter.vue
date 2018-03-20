@@ -40,6 +40,15 @@
       </el-tab-pane>
       <el-tab-pane showData="day">
         <span slot="label"><i class="el-icon-date"></i> 按时间筛选</span>
+        <el-date-picker
+          v-model="date"
+          type="daterange"
+          value-format="yyyy-M-d"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期">
+        </el-date-picker>
+        <el-button type="danger" @click="datedata">确定</el-button>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -52,6 +61,7 @@ import 'echarts/lib/component/tooltip'
 import 'echarts/extension/dataTool/index'
 import 'echarts/lib/chart/heatmap'
 import 'echarts/lib/chart/bar'
+import 'echarts/lib/chart/pie'
 
 export default {
   name: 'users',
@@ -74,7 +84,8 @@ export default {
       barOption: null,
       loption: [],
       ldata: null,
-      mdata: null
+      mdata: null,
+      date: []
     }
   },
   components: {
@@ -154,6 +165,18 @@ export default {
         id: this.product
       }
       Http.postQfModel('mysql/getProductInfo', param, function (data) {
+        _this.data = data
+      })
+    },
+    datedata () {
+      console.log(this.date)
+      return
+      let _this = this
+      let param = {
+        date: this.date
+      }
+      Http.postQfModel('mysql/getDateOrder', param, function (data) {
+        console.log(data)
         _this.data = data
       })
     },
