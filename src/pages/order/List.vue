@@ -93,7 +93,7 @@ export default {
     changePage (page) {
       this.loading = true
       this.$router.push({
-        path: '/order/list',
+        path: this.$route.fullPath,
         query: Object.assign({}, this.$route.query, {
           page: page
         })
@@ -123,7 +123,7 @@ export default {
       }
       this.loading = true
       this.$router.push({
-        path: '/order/list',
+        path: this.$route.fullPath,
         query: Object.assign({}, this.$route.query, {
           status: t
         })
