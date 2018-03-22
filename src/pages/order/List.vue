@@ -66,6 +66,7 @@ export default {
   },
   watch: {
     $route () {
+      this.loading = true
       this.init()
     }
   },
@@ -81,7 +82,9 @@ export default {
         product_id: this.$route.query.product_id || '',
         page: this.$route.query.page || 1,
         date: this.$route.query.date || '',
-        status: this.$route.query.status || ''
+        status: this.$route.query.status || '',
+        dateType: this.$route.query.dateType || '',
+        dates: this.$route.query.dates || ''
       }
       Http.postQfModel('mysql/getOrderList', param, function (data) {
         console.log(data)

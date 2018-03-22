@@ -34,7 +34,7 @@
             </el-tab-pane>
             <el-tab-pane>
               <span slot="label"><i class="el-icon-date"></i> 柱形折线图</span>
-              <e-charts v-loading="eloading" :style="{height: '400px', width: '1000px'}" :options="barOption"></e-charts>
+              <e-charts v-loading="eloading" :style="{height: '400px', width: '1000px'}" @click="showOrders" :options="barOption"></e-charts>
             </el-tab-pane>
           </el-tabs>
         </div>
@@ -64,7 +64,7 @@
                 <el-button size="mini" @click="setDateCalOption('mdata')">已完成订单金额</el-button>
                 <div class="showTitle">{{cdt}}</div>
               </div>
-              <e-charts ref="dateMapChart" class="calendar" :style="{height: cdh}" :options="dateCalOption"></e-charts>
+              <e-charts ref="dateMapChart" class="calendar" :style="{height: cdh}" @click="showOrders" :options="dateCalOption"></e-charts>
             </el-tab-pane>
             <el-tab-pane>
               <span slot="label"><i class="el-icon-date"></i> 柱形折线图</span>
@@ -74,7 +74,7 @@
                 <el-button size="mini" @click="getDateLineOption('month')">月</el-button>
                 <el-button size="mini" @click="getDateLineOption('year')">年</el-button>
               </div>
-              <e-charts v-loading="lineLoading" :style="{height: '400px', width: '1000px'}" :options="dateLineOption"></e-charts>
+              <e-charts v-loading="lineLoading" :style="{height: '400px', width: '1000px'}" @click="showOrders" :options="dateLineOption"></e-charts>
             </el-tab-pane>
             <el-tab-pane>
               <span slot="label"><i class="el-icon-date"></i> 饼图</span>
@@ -83,20 +83,22 @@
                 <el-button size="mini" @click="setDatePieOption('done')">已完成订单数量</el-button>
                 <el-button size="mini" @click="setDatePieOption('money')">已完成订单金额</el-button>
               </div>
-              <e-charts ref="datePieChart" style="width: 1000px;height: 600px;" :options="datePieOption"></e-charts>
+              <e-charts ref="datePieChart" style="width: 1000px;height: 600px;" @click="showOrders" :options="datePieOption"></e-charts>
             </el-tab-pane>
           </el-tabs>
         </div>
       </el-tab-pane>
     </el-tabs>
-    <div class="tableContainer">
-      <div class="closeList">
-        <svg class="qficon" aria-hidden="true">
-          <use xlink:href="#icon-guanbi"></use>
-        </svg>
+    <transition name="el-zoom-in-top">
+      <div v-show="isShowList" class="tableContainer">
+        <div class="closeList" @click="closeList">
+          <svg class="qficon" aria-hidden="true">
+            <use xlink:href="#icon-guanbi"></use>
+          </svg>
+        </div>
+        <List />
       </div>
-      <List />
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -121,6 +123,7 @@ export default {
       eloading: true,
       dateLoading: false,
       lineLoading: true,
+      isShowList: false,
       options: [],
       product: '',
       option: null,
@@ -150,7 +153,8 @@ export default {
       mddata: null,
       date: [],
       activeType: 'pro',
-      dateData: null
+      dateData: null,
+      curDateType: 'day'
     }
   },
   components: {
@@ -158,9 +162,6 @@ export default {
     List
   },
   watch: {
-    $route () {
-      this.init()
-    },
     data () {
       this.mdata = this.handleMapData(this.data.data)
       this.ldata = this.handleLineData(this.data.data)
@@ -171,11 +172,6 @@ export default {
       this.lddata = this.handleLineData(this.dateData.data)
       this.pdata = this.handlePieData(this.dateData.piedata)
       this.setDateOption()
-    }
-  },
-  computed: {
-    currentPage () {
-      return Number(this.$route.query.page) || 1
     }
   },
   methods: {
@@ -245,16 +241,16 @@ export default {
       cdata.forEach(function (e, i) {
         pdata.all.l.push(e.name)
         pdata.all.s[e.name] = i < len
-        pdata.all.d.push({name: e.name, value: e.count})
+        pdata.all.d.push({name: e.name, value: e.count, id: e.id})
         if (e.done > 0) {
           pdata.done.l.push(e.name)
           pdata.done.s[e.name] = i < len
-          pdata.done.d.push({name: e.name, value: e.done})
+          pdata.done.d.push({name: e.name, value: e.done, id: e.id})
         }
         if (e.money > 0) {
           pdata.money.l.push(e.name)
           pdata.money.s[e.name] = i < len
-          pdata.money.d.push({name: e.name, value: e.money})
+          pdata.money.d.push({name: e.name, value: e.money, id: e.id})
         }
       })
       return pdata
@@ -269,13 +265,67 @@ export default {
       console.log(131)
     },
     showOrders (data) {
+      this.isShowList = true
+      console.log(data)
+      switch (data.seriesName) {
+        case 'adata':
+          this.changeRoute({product_id: this.product, date: data.value[0], page: 1, status: null, dateType: null, dates: null})
+          break
+        case 'ddata':
+          this.changeRoute({product_id: this.product, date: data.value[0], page: 1, status: 'done', dateType: null, dates: null})
+          break
+        case 'mdata':
+          this.changeRoute({product_id: this.product, date: data.value[0], page: 1, status: 'done', dateType: null, dates: null})
+          break
+        case 'caladata':
+          this.changeRoute({product_id: null, date: data.value[0], page: 1, status: null, dateType: null, dates: null})
+          break
+        case 'calddata':
+          this.changeRoute({product_id: null, date: data.value[0], page: 1, status: 'done', dateType: null, dates: null})
+          break
+        case 'calmdata':
+          this.changeRoute({product_id: null, date: data.value[0], page: 1, status: 'done', dateType: null, dates: null})
+          break
+        case '全部':
+          this.changeRoute({product_id: this.product, date: data.name, page: 1, status: null, dateType: null, dates: null})
+          break
+        case '金额':
+          this.changeRoute({product_id: this.product, date: data.name, page: 1, status: 'done', dateType: null, dates: null})
+          break
+        case '已完成':
+          this.changeRoute({product_id: this.product, date: data.name, page: 1, status: 'done', dateType: null, dates: null})
+          break
+        case 'date全部':
+          this.changeRoute({product_id: null, date: data.name, page: 1, status: null, dateType: this.curDateType, dates: this.date})
+          break
+        case 'date金额':
+          this.changeRoute({product_id: null, date: data.name, page: 1, status: 'done', dateType: this.curDateType, dates: this.date})
+          break
+        case 'date已完成':
+          this.changeRoute({product_id: null, date: data.name, page: 1, status: 'done', dateType: this.curDateType, dates: this.date})
+          break
+        case 'all':
+          this.changeRoute({product_id: data.data.id, date: null, page: 1, status: null, dateType: null, dates: this.date})
+          break
+        case 'done':
+          this.changeRoute({product_id: data.data.id, date: null, page: 1, status: 'done', dateType: null, dates: this.date})
+          break
+        case 'money':
+          this.changeRoute({product_id: data.data.id, date: null, page: 1, status: 'done', dateType: null, dates: this.date})
+          break
+        default:
+          this.changeRoute({})
+          break
+      }
+    },
+    changeRoute (query) {
       this.$router.push({
-        path: `/order/list`,
-        query: {
-          product_id: this.product,
-          date: data.value[0]
-        }
+        path: this.$route.fullPath,
+        query: query
       })
+    },
+    closeList () {
+      this.isShowList = false
     },
     filter () {
       this.eloading = true
@@ -336,7 +386,7 @@ export default {
           selected: data.s
         },
         series: [{
-          name: '名称',
+          name: `${type}`,
           type: 'pie',
           radius: '55%',
           center: ['25%', '50%'],
@@ -374,6 +424,7 @@ export default {
           cellSize: ['auto', 16]
         })
         s.push({
+          name: `cal${type}`,
           type: 'heatmap',
           coordinateSystem: 'calendar',
           calendarIndex: i,
@@ -402,6 +453,7 @@ export default {
     },
     getDateLineOption (type) {
       this.lineLoading = true
+      this.curDateType = type
       let _this = this
       let param = {
         date: this.date,
@@ -463,15 +515,15 @@ export default {
           }
         }],
         series: [{
-          name: '已完成',
+          name: 'date已完成',
           type: 'bar',
           data: this.lddata.done
         }, {
-          name: '全部',
+          name: 'date全部',
           type: 'bar',
           data: this.lddata.all
         }, {
-          name: '金额',
+          name: 'date金额',
           type: 'line',
           yAxisIndex: 1,
           data: this.lddata.money
@@ -503,6 +555,7 @@ export default {
           cellSize: ['auto', 16]
         })
         s.push({
+          name: type,
           type: 'heatmap',
           coordinateSystem: 'calendar',
           calendarIndex: i,
@@ -641,6 +694,9 @@ export default {
         cursor: pointer;
         text-align: center;
         line-height: 70px;
+        &:hover{
+          background: rgba(0,0,0,0.2);
+        }
         .qficon{
           width: 40px;
           height: 40px;
