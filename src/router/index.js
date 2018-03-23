@@ -106,6 +106,11 @@ export default new Router({
       component: require('@/pages/course/Filter').default
     },
     {
+      path: '/course/teacher',
+      name: 'courseTeacher',
+      component: require('@/pages/course/Teacher').default
+    },
+    {
       path: '/images/',
       name: 'showimg',
       component: require('@/pages/images/Show').default

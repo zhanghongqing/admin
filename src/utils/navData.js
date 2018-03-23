@@ -53,6 +53,9 @@ export default {
     }, {
       name: '创建课程',
       router: '/course/create'
+    }, {
+      name: '教师管理',
+      router: '/course/teacher'
     }]
   }, {
     title: '图片管理',
